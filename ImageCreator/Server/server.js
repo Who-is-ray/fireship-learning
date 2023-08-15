@@ -18,6 +18,7 @@ app.use(cors()); // security mechanism of cross version resource sharing
 app.use(express.json()); // only handle json format incoming data
 
 app.post('/dream', async (req, res) => {
+  try {
     // retrive users image requirement prompt
     const prompt = req.body.prompt;
 
@@ -27,10 +28,15 @@ app.post('/dream', async (req, res) => {
       n: 1,
       size: '1024x1024',
     });
-
+        
     // sending response
     const image = aiResponse.data.data[0].url;
     res.send({ image });
+    
+  } catch (error) {
+    console.error(error)
+    res.status(500).send(error?.response.data.error.message || 'Something went wrong');
+  }
 });
 
 // start to run the server on port 8080
